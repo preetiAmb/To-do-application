@@ -1,47 +1,54 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-let todoItems = [];
+let todos = [];
 
-app.get('/api/todos', (req, res) => {
-  res.json(todoItems);
+app.get('/todos', (req, res) => {
+  res.status(200).json(todos);
 });
 
-app.post('/api/todos', (req, res) => {
-  const { title, description } = req.body;
-  const newTodo = { title, description, completed: false };
-  todoItems.push(newTodo);
+app.post('/todos', (req, res) => {
+  const { title } = req.body;
+  const newTodo = { id: uuidv4(), title, completed: false };
+  todos.push(newTodo);
   res.status(201).json(newTodo);
 });
 
-app.put('/api/todos/:id', (req, res) => {
-  const { id } = req.params;
-  const { title, description, completed } = req.body;
-  const todoIndex = todoItems.findIndex(todo => todo.id === id);
-  if (todoIndex === -1) {
-    res.status(404).json({ error: 'Todo not found' });
+app.put('/todos/:id', (req, res) => {
+  const todoId = req.params.id;
+  const { title, completed } = req.body;
+  const todoIndex = findTodoIndex(todoId);
+
+  if (todoIndex !== -1) {
+    todos[todoIndex].title = title || todos[todoIndex].title;
+    todos[todoIndex].completed = completed || todos[todoIndex].completed;
+    res.json(todos[todoIndex]);
   } else {
-    const updatedTodo = { ...todoItems[todoIndex], title, description, completed };
-    todoItems[todoIndex] = updatedTodo;
-    res.json(updatedTodo);
+    res.status(404).json({ message: 'Todo not found' });
   }
 });
 
-app.patch('/api/todos/:id/complete', (req, res) => {
-  const { id } = req.params;
-  const todoIndex = todoItems.findIndex(todo => todo.id === id);
-  if (todoIndex === -1) {
-    res.status(404).json({ error: 'Todo not found' });
+app.delete('/todos/:id', (req, res) => {
+  const todoId = req.params.id;
+  const todoIndex = findTodoIndex(todoId);
+
+  if (todoIndex !== -1) {
+    const deletedTodo = todos.splice(todoIndex, 1);
+    res.json(deletedTodo[0]);
   } else {
-    todoItems[todoIndex].completed = true;
-    res.json(todoItems[todoIndex]);
+    res.status(404).json({ message: 'Todo not found' });
   }
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+function findTodoIndex(todoId) {
+  return todos.findIndex((todo) => todo.id === todoId);
+}
+
+app.listen(8000, () => {
+  console.log('Server is running on port 8000');
 });

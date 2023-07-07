@@ -1,8 +1,11 @@
 {
   "devDependencies": {
     "concurrently": "^8.2.0"
-  },"scripts": {
+  },
+  "scripts": {
     "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && node server.js\""
+  },
+  "dependencies": {
+    "uuid": "^9.0.0"
   }
-  
 }
