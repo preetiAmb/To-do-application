@@ -2,6 +2,14 @@ import { useContext } from 'react';
 import { ToDoContext } from '../contexts/ToDoContext';
 import { ITask } from '@/types/tasks';
 import router from 'next/router';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import { ListItem, ListItemText, ListItemButton, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 
 interface TodoListProps {
   todos: ITask[];
@@ -27,24 +35,32 @@ const TodoList: React.FC = () => {
   };
 
   return (
-    <div>
-      <ul>
-        {todos.map((todo) => (
-          <li key={todo.id}>
-            <input
-              type="text"
-              value={todo.title}
-              onChange={(e) => handleUpdateTodoText(todo.id, e.target.value)}
-            />
-            <button onClick={() => handleUpdateTodoCompletion(todo.id, !todo.completed)}>
-              {todo.completed ? 'Mark Incomplete' : 'Mark Complete'}
-            </button>
-            <button onClick={() => handleSaveTodo(todo.id)}>Save</button>
-            <button onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+     
+     <Box display="flex" flexDirection="column" alignItems="center">
+      {todos.map((todo) => (
+        <ListItem key={todo.id}>
+          <TextField
+            type="text"
+            value={todo.title}
+            onChange={(e) => handleUpdateTodoText(todo.id, e.target.value)}
+          />
+          <IconButton
+            onClick={() => handleUpdateTodoCompletion(todo.id, !todo.completed)}
+          >
+            {todo.completed ? <CheckIcon /> : <ClearIcon />}
+          </IconButton>
+          <IconButton onClick={() => handleSaveTodo(todo.id)}>
+            <SaveIcon />
+          </IconButton>
+          <IconButton onClick={() => handleDeleteTodo(todo.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </ListItem>
+      ))}
+    </Box>
+     
+    </>
   );
 };
 
