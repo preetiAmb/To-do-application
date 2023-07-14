@@ -6,9 +6,8 @@ const theme = createTheme();
 function MyApp({ Component, pageProps }) {
   return (
     <ToDoContextProvider>
-      {" "}
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />{" "}
+        <Component {...pageProps} />
       </ThemeProvider>
     </ToDoContextProvider>
   );
